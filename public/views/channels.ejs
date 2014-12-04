@@ -1,0 +1,13 @@
+
+<div>
+    <h1>Channels</h1>
+</div>
+
+
+<div class="channels">
+
+	<% for(var i=0; i<channels.length; i++) {%>
+	   <a href="/channels/<%= channels[i].name %>"><%= channels[i].name %></a><br>
+	<% } %>
+
+</div>

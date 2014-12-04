@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
 var configDB = require('./config/database.js');
-
+var router = express.Router();
 
 //connect to our database
 mongoose.connect(configDB.url);
@@ -53,7 +53,7 @@ app.use(flash()); //for flash messages stored in session
 app.use(express.static(__dirname + '/public'));
 
 //routes module
-require('./src/js/routes')(app,passport);
+require('./src/js/routes')(app,router,passport);
  
 //listen app
 app.listen(port);

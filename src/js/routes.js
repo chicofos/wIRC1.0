@@ -1,4 +1,16 @@
-module.exports = function(app, passport){
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+
+
+mongoose.model('channels', 
+               new Schema({ name: String, users: Number }), 
+               'Channels'); 
+
+var channels = mongoose.model('channels');
+
+module.exports = function(app,router,passport){
+
 
 
    //Home page
@@ -15,6 +27,31 @@ module.exports = function(app, passport){
     app.get('/profile', isLoggedIn, function(req, res){
         //get the user out of session and pass to template
         res.render('profile', { user : req.user });
+    });
+
+    //Channels
+    app.get('/channels',isLoggedIn, function(req,res){
+
+        //get all channels
+       channels.find({}, function(err, data) {
+        
+            if (err || data === null)
+                res.render('404' , {layout : 'layout-login'});
+            
+            res.render('channels', { user : req.user, channels : data });
+        });
+    });
+
+
+    app.get('/channels/:id', function (req, res, next) {
+
+        channels.findOne({ name: req.params.id }, function(err, data) {
+
+            if (err || data === null)
+                res.render('404' , {layout : 'layout-login'});
+            else
+                res.render('chat', { user : req.user, channel: data}); 
+        });
     });
 
      // FACEBOOK ROUTES ======================
