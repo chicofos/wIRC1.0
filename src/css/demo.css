@@ -143,6 +143,19 @@ section {
 	color: #fffce1;
 }
 
+.message
+{
+	text-align: left;
+	height: 30px;
+}
+.header-chat{
+	text-align: right;
+	margin-right: 50px;
+}
+.chat{
+	height: 400px;
+}
+
 /* Related demos */
 .related {
 	margin-left: 35px;
