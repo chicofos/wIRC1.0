@@ -9,6 +9,7 @@
 
   "devDependencies": {
     "express": "~4.5.1",
+    "socket.io":"0.9.16",
     "ejs" : "~0.8.5",
     "express-ejs-layouts": "~1.1.0",
     "mongoose" : "~3.8.1",          

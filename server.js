@@ -1,19 +1,29 @@
-var express = require('express');
-var app = express();
-var port = process.env.PORT || 8080;
-var expressLayouts = require('express-ejs-layouts');
-var morgan = require('morgan');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var flash = require('connect-flash');
-var configDB = require('./config/database.js');
-var router = express.Router();
+var express = require('express'),
+    app = express(),
+    port = process.env.PORT || 8080,
+    expressLayouts = require('express-ejs-layouts'),
+    morgan = require('morgan'),
+    mongoose = require('mongoose'),
+    passport = require('passport'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
+    flash = require('connect-flash'),
+    configDB = require('./config/database.js'),
+    router = express.Router(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
 //connect to our database
 mongoose.connect(configDB.url);
+
+var chatSchema = mongoose.Schema({
+    nick: String,
+    msg: String,
+    created: {type:Date, default: Date.now}
+});
+
+var Chat = mongoose.model('Message', chatSchema);
 
 // pass passport for configuration
 require('./config/passport')(passport); 
@@ -49,12 +59,65 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); //persistent login sessions
 app.use(flash()); //for flash messages stored in session
-
 app.use(express.static(__dirname + '/public'));
+
 
 //routes module
 require('./src/js/routes')(app,router,passport);
  
 //listen app
-app.listen(port);
+server.listen(port);
 console.log('The magic happens on port ' + port);
+
+
+var users = {};
+
+io.sockets.on('connection', function(socket){
+
+    var query = Chat.find({});
+    query
+    .sort('-created')
+    .limit(15).exec(function(err, docs){
+        if(err) throw err;
+        console.log('sending old msgs');
+        socket.emit('load old msgs', docs);
+    })
+
+    socket.on('new user', function(data,callback){
+
+        if(data in users)
+        {
+            callback(false);
+        }else{
+            socket.nickname = data;
+            users[socket.nickname] = socket;
+            callback(true);
+        }
+           
+        updateNicknames();
+    });
+
+    function updateNicknames(){
+        io.sockets.emit('usernames', Object.keys(users));
+    }
+
+    socket.on('send message', function(data, callback){
+        var msg = data.trim();
+
+        if(msg !== ''){
+            var newMsg = new Chat({msg:msg, nick:socket.nickname});
+            newMsg.save(function(err){
+                if(err) throw err;
+                io.sockets.emit('new message', {msg : msg, nick: socket.nickname, date: newMsg.created});
+            })
+        }
+
+
+    });
+
+    socket.on('disconnect', function(data){
+        if(!socket.nickname) return;
+        delete users[socket.nickname];
+        updateNicknames();
+    });
+});

@@ -1,9 +1,94 @@
 <div class="header-chat">   
-	<strong>Channel:</strong><%= channel.name %><br>
-	<strong>Users Connected:</strong><%= channel.users %></div>
-<div class="chat">
+	<div id="channel">
+		<strong>Channel:</strong><%= channel.name %>
+	</div>
+	<div id="Nusers">
+		<strong>Users:</strong><span id="numberOfUsers"></span>
+	</div>
+	
+</div>
 
+<div id="wrapper">
+    <div id="chat"> 
+    </div>
+    <div id="users">
+    </div>
+	<form id="send-message">
+		<input type="text" class="msg" id="NewMessage">
+		<input type="submit" class="btn btn-primary btn-sm" value="send"></input>
+	</form>
 </div>
-<div >
-<input type="text" class="message">
-</div>
+
+
+
+<script>
+ $(function(){
+ 	
+ 	var socket = io.connect();
+ 	var $messageForm = $("#send-message");
+ 	var $messageBox = $("#NewMessage");
+ 	var $nUsers = $("#numberOfUsers");
+ 	var $chat = $("#chat");
+ 	var $users = $("#users");
+	var path = $('#photo').attr('src').replace(/^(.*\/)[^\/]+$/, '$1');
+
+ 	//a new user is connected
+ 	socket.emit('new user',$(".name").text(), function(data){
+ 		if(data){
+ 			//do something when a new user is connected
+ 		}
+ 	});
+
+ 	socket.on('usernames', function(data){
+ 		
+ 		$nUsers.html(data.length);
+
+ 		for(var i=0; i< data.length; i++){
+ 			$users.append('<div id="nickname"><img src="'+path+'picture" class="circular"> <strong>'+$(".name").text() +'</strong></div>');
+ 		}
+ 	});
+
+ 	$messageForm.submit(function(e){
+ 		e.preventDefault();
+ 		socket.emit('send message', $messageBox.val(), function(data){
+ 			//add stuff later
+ 		});
+ 		$messageBox.val('');
+ 	});
+
+ 	socket.on('whisper', function(data){
+
+ 	});
+
+ 	socket.on('load old msgs', function(docs){
+ 		for (var i = docs.length -1; i >= 0; i--) {
+ 			displayMsg(docs[i]);
+ 		};
+ 	});
+
+ 	socket.on('new message', function(data){
+ 		displayMsg(data);
+
+ 	});
+
+ 	function displayMsg(data){
+		var date;
+ 		
+ 		if(data.created === undefined)
+ 			date = new Date();
+ 		else
+ 			date = new Date(data.created);
+ 		
+ 		var ampm = (date.getHours() >= 12) ? "pm" : "am";
+
+ 		date = date.getDate() +'-'+ date.getMonth() +'-'+ date.getYear()+ ' '+ date.getHours()+':'+date.getMinutes();
+
+		$chat.append('<div class="message"><img src="'+path+'picture" class="circular"><span id="name">'+$(".name").text() +':<span id="date">'+ date +' '+ ampm+'</span></span> '+ data.msg +'<div>');
+
+		$chat.scrollTop($("#chat")[0].scrollHeight);
+ 	}
+
+ });
+</script>
+
+

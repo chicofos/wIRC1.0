@@ -13,7 +13,7 @@
 					<div class="profile">
 
 						<%if(user.facebook.id != undefined) { %>
-			            	<img src="https://graph.facebook.com/<%= user.facebook.id%>/picture">
+			            	<img id="photo" src="https://graph.facebook.com/<%= user.facebook.id%>/picture">
 			            	<span class="name"><%= user.facebook.name %></span>
 			          <% } %>
 					</div>
@@ -44,7 +44,25 @@
 				</div>
 			</div>
 		</div>
+		<script>
+		  window.fbAsyncInit = function() {
+		    FB.init({
+		      appId      : '172154352981766',
+		      xfbml      : true,
+		      version    : 'v2.2'
+		    });
+		  };
+
+		  (function(d, s, id){
+		     var js, fjs = d.getElementsByTagName(s)[0];
+		     if (d.getElementById(id)) {return;}
+		     js = d.createElement(s); js.id = id;
+		     js.src = "//connect.facebook.net/en_US/sdk.js";
+		     fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		</script>
 		<script src="/js/classie.min.js"></script>
 		<script src="/js/main.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
 	</body>
 </html>   

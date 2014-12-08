@@ -15,9 +15,7 @@
 .clearfix:after { clear: both; }
 
 .channels{
-  width: 200px ;
-  margin-left: auto ;
-  margin-right: auto ;
+ 
 }
 
 body {
@@ -44,7 +42,6 @@ button:focus {
 
 section {
 	padding: 1em;
-	text-align: center;
 }
 .name{
 	color:#b8b7ad;
@@ -143,24 +140,104 @@ section {
 	color: #fffce1;
 }
 
-.message
+#date{
+	font-style: italic;
+	float:right;
+	color:#D8D8D8 ;
+	font-size: smaller;
+}
+#name{
+	font-weight: bold;
+}
+.msg
 {
+	width: 80%;
 	text-align: left;
-	height: 30px;
 }
-.header-chat{
-	text-align: right;
-	margin-right: 50px;
+.message{
+	text-align: left;
+	margin-top: 4px;
+	   white-space: pre-wrap;      /* CSS3 */   
+   white-space: -moz-pre-wrap; /* Firefox */    
+   white-space: -pre-wrap;     /* Opera <7 */   
+   white-space: -o-pre-wrap;   /* Opera 7 */    
+   word-wrap: break-word;      /* IE */
+   font-size:small;
 }
-.chat{
-	height: 400px;
+input[type=text], textarea {
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #DDDDDD;
+
 }
+ 
+input[type=text]:focus, textarea:focus {
+  box-shadow: 0 0 5px rgba(189, 187, 187, 0.79)
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid rgba(189, 187, 187, 0.79)
+}
+
+#channel, #Nusers {
+    float: left;
+}
+#channel {
+     width: 70%;
+}
+
+#nickname{
+	font-size:small;
+	text-align: center;
+}
+#Nusers {
+     width: 30%;
+     text-align: right;
+}
+
+#wrapper {
+     margin: 0 auto;
+}
+#chat, #users {
+    float: left;
+    min-height: 450px;
+}
+#chat {
+     width: 80%;
+     height: 400px;
+	background-color: white;
+	overflow-y: auto;
+	border: 1px solid #DDDDDD;
+}
+#users {
+     width: 20%;
+     height: 400px;
+     /*background-color: white;*/
+     overflow-y: auto;
+     /*border: 1px solid #DDDDDD;*/
+}
+
+
+.circular{
+	width: 40px;
+	height: 40px;
+	border-radius: 150px;
+	-webkit-border-radius: 150px;
+	-moz-border-radius: 150px;
+	background: url(http://link-to-your/image.jpg) no-repeat;
+}
+
 
 /* Related demos */
 .related {
-	margin-left: 35px;
+	margin-left: 10%;
+	margin-right: 10%;
 	padding: 0 3em 5em;
-	height: 500px;
+	height: 530px;
 }
 
 .related p {
